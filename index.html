@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Spring Day Express: consulta rutas, tarifas y reserva tus viajes.">
+        <meta name="theme-color" content="#176b60">
+        <title>Spring Day Express | Viaja a tu manera</title>
+        <link rel="stylesheet" href="estilos.css">
+        <script src="script.js" defer></script>
+    </head>
+    <body>
+        <header class="site-header">
+            <a class="brand" href="#inicio" data-view="inicio" aria-label="Spring Day Express, inicio">
+                <span>Spring Day <b>Express</b></span>
+            </a>
+            <button class="menu-toggle" id="menuToggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="mainNav">☰</button>
+            <nav class="main-nav" id="mainNav" aria-label="Navegación principal">
+                <button class="nav-link active" type="button" data-view="inicio">Inicio</button>
+                <button class="nav-link" type="button" data-view="rutas">Rutas y tarifas</button>
+                <button class="nav-link" type="button" data-view="compra">Comprar boleto</button>
+                <button class="nav-link" type="button" data-view="encuesta">Encuesta</button>
+                <button class="nav-link" type="button" data-view="admin">Administración</button>
+            </nav>
+        </header>
+
+        <main id="mainContent">
+            <section id="inicio" class="view active">
+                <div class="hero">
+                    <div class="hero-content">
+                        <p class="eyebrow">DESCUBRE GUATEMALA SOBRE RIELES</p>
+                        <h1>Tu próxima aventura <em>comienza aquí.</em></h1>
+                        <p>Explora destinos, consulta tarifas y organiza tu viaje con Spring Day Express.</p>
+                        <div class="actions">
+                            <button class="btn btn-primary" type="button" data-view="compra">Reservar boleto</button>
+                            <button class="btn btn-light" type="button" data-view="rutas">Explorar rutas</button>
+                        </div>
+                    </div>
+                </div>
+                <section class="benefits" aria-label="Beneficios">
+                    <article><h3>Planifica fácilmente</h3><p>Consulta destinos, horarios y tarifas desde un solo lugar.</p></article>
+                    <article><h3>Organiza tu recorrido</h3><p>Agrega varios destinos y calcula el total de tu reserva.</p></article>
+                    <article><h3>Tu boleto digital</h3><p>Obtén un comprobante imprimible con los datos esenciales del viaje.</p></article>
+                </section>
+                <section class="section">
+                    <div class="section-heading">
+                        <div><p class="eyebrow">PLANIFICA TU VIAJE</p><h2>Destinos destacados</h2></div>
+                        <button class="text-button" type="button" data-view="rutas">Ver todas las rutas →</button>
+                    </div>
+                    <div id="featuredRoutes" class="route-grid"></div>
+                </section>
+            </section>
+
+            <section id="rutas" class="view">
+                <div class="page-heading">
+                    <p class="eyebrow">EXPLORA GUATEMALA</p>
+                    <h1>Rutas y tarifas</h1>
+                    <p>Selecciona «Más información» para conocer cada recorrido y sus lugares de interés.</p>
+                </div>
+                <div id="allRoutes" class="route-grid"></div>
+            </section>
+
+            <section id="detalle" class="view">
+                <div class="detail-top">
+                    <button class="btn btn-outline" id="backToRoutes" type="button">← Volver a rutas y destinos</button>
+                    <span class="eyebrow">DETALLE DE RUTA</span>
+                </div>
+                <div id="routeDetail"></div>
+            </section>
+
+            <section id="compra" class="view">
+                <div class="page-heading">
+                    <p class="eyebrow">RESERVA EN UNOS PASOS</p>
+                    <h1>Comprar boleto</h1>
+                    <p>Completa tus datos, selecciona uno o varios destinos y revisa el monto antes de reservar.</p>
+                </div>
+                <form id="bookingForm" class="booking-layout">
+                    <div class="panel">
+                        <h2>Información del pasajero</h2>
+                        <div class="form-grid">
+                            <label>Nombre completo *<input name="nombre" maxlength="100" required autocomplete="name"></label>
+                            <label>Documento de identificación *<input name="documento" maxlength="25" required placeholder="DPI / identificación"></label>
+                            <label>Correo electrónico *<input name="correo" type="email" autocomplete="email" required placeholder="correo@ejemplo.com"></label>
+                            <label>Teléfono *<input name="telefono" type="tel" pattern="(?:[0-9]|\+|\(|\)| |-){8,20}" required placeholder="5555-5555"></label>
+                            <label>Fecha del viaje *<input name="fecha" id="travelDate" type="date" required></label>
+                            <label>Adultos (Tarifa normal)
+                                <input name="adultos" id="adultsCount" type="number" min="0" max="10" step="1" inputmode="numeric">
+                            </label>
+                            <label>Niños (50% de descuento)
+                                <input name="ninos" id="childrenCount" type="number" min="0" max="10" step="1" inputmode="numeric">
+                            </label>
+                            <label>Adultos mayores (30% de descuento)
+                                <input name="adultosMayores" id="seniorsCount" type="number" min="0" max="10" step="1" inputmode="numeric">
+                            </label>
+                        </div>
+
+                        <div class="route-picker">
+                            <h2>Selecciona tus destinos *</h2>
+                            <p class="muted">Puedes marcar más de una ruta. El precio mostrado corresponde a una persona.</p>
+                            <div id="bookingRoutes" class="booking-route-list"></div>
+                        </div>
+                        <label class="consent"><input type="checkbox" name="confirmacion" required> Confirmo que los datos ingresados son correctos.</label>
+                        <p id="bookingMessage" class="form-message" role="status" aria-live="polite"></p>
+                        <button class="btn btn-primary btn-wide" type="submit">Confirmar reserva y generar boleto</button>
+                    </div>
+                    <aside class="summary panel" aria-live="polite">
+                        <h2>Resumen de compra</h2>
+                        <div id="selectedSummary" class="summary-lines"><p class="muted">Selecciona al menos un destino.</p></div>
+                        <div class="summary-row"><span>Personas</span><strong id="summaryPeople">0</strong></div>
+                        <div class="summary-total"><span>Total a pagar</span><strong id="bookingTotal">Q 0.00</strong></div>
+                    </aside>
+                </form>
+                <div id="ticketArea" class="ticket-area" hidden></div>
+            </section>
+
+            <section id="encuesta" class="view">
+                <div class="page-heading">
+                    <p class="eyebrow">QUEREMOS ESCUCHARTE</p>
+                    <h1>Encuesta de satisfacción</h1>
+                    <p>Tu opinión nos ayuda a mejorar la experiencia.</p>
+                </div>
+                <form id="surveyForm" class="panel survey-form">
+                    <label>Nombre del pasajero *<input name="viajero" required maxlength="100" autocomplete="name"></label>
+                    <label>1. ¿Cómo calificas la puntualidad del tren? *
+                        <select name="puntualidad" required>
+                            <option value="">Selecciona</option>
+                            <option>Excelente</option><option>Buena</option><option>Regular</option><option>Mala</option>
+                        </select>
+                    </label>
+                    <fieldset>
+                        <legend>2. ¿Cómo fue la atención del personal? *</legend>
+                        <label class="choice"><input type="radio" name="atencion" value="Excelente" required> Excelente</label>
+                        <label class="choice"><input type="radio" name="atencion" value="Buena"> Buena</label>
+                        <label class="choice"><input type="radio" name="atencion" value="Regular"> Regular</label>
+                        <label class="choice"><input type="radio" name="atencion" value="Mala"> Mala</label>
+                    </fieldset>
+                    <fieldset id="surveyAspectsGroup">
+                        <legend>3. ¿Qué aspectos te gustaron? (Puedes elegir varios) *</legend>
+                        <label class="choice"><input type="checkbox" name="aspectos" value="Comodidad"> Comodidad</label>
+                        <label class="choice"><input type="checkbox" name="aspectos" value="Limpieza"> Limpieza</label>
+                        <label class="choice"><input type="checkbox" name="aspectos" value="Puntualidad"> Puntualidad</label>
+                        <label class="choice"><input type="checkbox" name="aspectos" value="Precio"> Precio</label>
+                    </fieldset>
+                    <label>4. ¿Recomendarías nuestro servicio? *
+                        <select name="satisfaccion" required>
+                            <option value="">Selecciona una opción</option>
+                            <option value="Sí">Sí</option><option value="Tal vez">Tal vez</option><option value="No">No</option>
+                        </select>
+                    </label>
+                    <fieldset>
+                        <legend>5. ¿Cómo consideras la limpieza de las instalaciones? *</legend>
+                        <label class="choice"><input type="radio" name="limpieza" value="Excelente" required> Excelente</label>
+                        <label class="choice"><input type="radio" name="limpieza" value="Buena"> Buena</label>
+                        <label class="choice"><input type="radio" name="limpieza" value="Necesita mejorar"> Necesita mejorar</label>
+                    </fieldset>
+                    <label>6. Comentario adicional *<textarea name="comentario" rows="4" maxlength="500" required></textarea></label>
+                    <p id="surveyMessage" class="form-message" role="status" aria-live="polite"></p>
+                    <button class="btn btn-primary" type="submit">Enviar evaluación</button>
+                </form>
+            </section>
+
+            <section id="admin" class="view">
+                <div class="page-heading">
+                    <p class="eyebrow">GESTIÓN DEL SISTEMA</p>
+                    <h1>Administración</h1>
+                    <p>Acceso al panel de reservas y evaluaciones.</p>
+                </div>
+                <div class="admin-login-wrap">
+                    <div id="adminLogin" class="panel login-panel">
+                        <h2>Iniciar sesión</h2>
+                        <p class="muted">Ingresa tus credenciales para consultar las reservas y evaluaciones.</p>
+                        <form id="loginForm">
+                            <label>Usuario<input name="usuario" autocomplete="username" required></label>
+                            <label>Contraseña<input name="password" type="password" autocomplete="current-password" required></label>
+                            <button class="btn btn-primary btn-wide" type="submit">Iniciar sesión</button>
+                            <p id="loginMessage" class="form-message" role="alert" aria-live="polite"></p>
+                        </form>
+                    </div>
+                </div>
+                <div id="adminPanel" hidden>
+                    <div class="admin-toolbar">
+                        <div><h2>Resumen del sistema</h2><p class="muted" id="adminDataMode"></p></div>
+                        <button id="logoutBtn" class="btn btn-outline" type="button">Cerrar sesión</button>
+                    </div>
+                    <div class="metrics">
+                        <article class="metric"><span>Reservas</span><strong id="reservationCount">0</strong></article>
+                        <article class="metric"><span>Evaluaciones</span><strong id="surveyCount">0</strong></article>
+                    </div>
+                    <div class="panel table-panel">
+                        <div class="table-heading"><h3>Reservas registradas</h3><button class="text-button" id="exportBtn" type="button">Exportar CSV ↓</button></div>
+                        <div class="table-scroll">
+                            <table>
+                                <thead><tr><th>Código</th><th>Pasajero</th><th>Destinos</th><th>Fecha</th><th>Personas</th><th>Total</th></tr></thead>
+                                <tbody id="reservationRows"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="panel table-panel">
+                        <h3>Evaluaciones</h3>
+                        <div class="table-scroll">
+                            <table>
+                                <thead><tr><th>Pasajero</th><th>Puntualidad</th><th>Atención</th><th>Aspectos</th><th>Recomendación</th><th>Limpieza</th><th>Comentario</th></tr></thead>
+                                <tbody id="surveyRows"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="site-footer">
+            <strong>SPRING DAY EXPRESS</strong>
+            <p>Proyecto Parcial · Programación II · 2026</p>
+            <p>© 2026 Spring Day Express. Sitio LYN.</p>
+        </footer>
+    </body>
+</html>
